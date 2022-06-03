@@ -428,26 +428,63 @@ List 자료형에는 ArrayList, Vector, LinkedList 등의 List 인터페이스�
 
 ### 제네릭스(Generics)
 
-자바5이후에 도입이 되었으며, 커스텀하여 생성도 가능하다... to be continue....
+자바5이후에 도입이 되었으며, 커스텀하여 생성도 가능하다.
 
 제네릭스로 List에서 명확하게 하는 이유는 데이터를 넣을때는 상관없지만, 넣은 것을 가져올때 Object로 가져와서 모두 각각 자료형에 맞게 형변환(casting)을 해주어야 하기 때문이다. 
 
-### ArrayList 활용
+제네릭 사용의 장점
+- 제네릭 클래스 타입의 객체를 생성할때 개발자가 원하는 타입을 지정할 수 있음.
+- 타입 안정성을 제공.
+- 의도하지 않은 타입의 객체가 저장되는 것을 막아 잘못 형변환 되는 오류를 방지.
+- 형변환의 번거로움을 줄여줌. -> 간결한 코드 유지 가능
 
-- 기존의 Array를 가지고 ArrayList로 변환
-    
-    ```java
+```java
     import java.util.ArrayList;
-    import java.util.Arrays;
-    
-    public class Sample {
-        public static void main(String[] args) {
-            String[] data = {"138", "129", "142"};  // 이미 투구수 데이터 배열이 있다.
-            ArrayList<String> pitches = new ArrayList<>(Arrays.asList(data));
-            System.out.println(pitches);  // [138, 129, 142] 출력
+    import java.util.List;
+
+    public class GenericTest {
+        public static class Storage<T> {
+            T item;
+
+            public T getItem() {
+                return item;
+            }
+
+            public void setItem(T item) {
+                this.item = item;
+            }
+        }
+
+        public static void main(String[] args){
+            Storage<String> storage1 = new Storage<>();
+            storage1.setItem("test!!!");
+
+            Storage<Integer> storage2 = new Storage<>();
+            storage2.setItem(128883991);
+
+            System.out.println(storage1.getItem()); // test!!!
+            System.out.println(storage2.getItem()); // 128883991
+
+            GenericTest gt2 = new GenericTest();
+
+            System.out.println(gt2.convert(storage1)); // [t, e, s, t, !, !, !]
+            System.out.println(gt2.convert(storage2)); // [1, 2, 8, 8, 8, 3, 9, 9, 1]
+        }
+
+        // return type, 매개변수 모두 wildcard 사용됨. 어떠한 형태든 허용된다...?
+        // 컴파일단에서는 exception 안나고 parsing 중 지원이 안되는 타입일때 오류 날듯.. 
+        public <T> List<Character> convert(Storage<T> storage) {
+            ArrayList<Character> list = new ArrayList<>();
+
+            String s = String.valueOf(storage.getItem());
+            int size = s.length();
+            for (int i = 0; i < size; i++) {
+                list.add(s.charAt(i));
+            }
+            return list;
         }
     }
-    ```
+```
     
 - String.join
     
@@ -821,11 +858,12 @@ public class Sample {
     
     객체를 사용하면 각 계산기의 값들이 독립적으로 유지가되며,  계산기 대수가 늘어나더라도 객체를 생성만 하면되기 때문에 클래스를 더 만들필요가 없어진다. 
     
-- 클래스
+<br>
+##### - 클래스
+  
+  **객체 지향적 (Object Oriented)이라는 말의 의미도 곱씹어 보면 결국 이 객체 변수의 값이 독립적으로 유지되기 때문에 가능한 것이다.** 
     
-    ****  객체 지향적 (Object Oriented)이라는 말의 의미도 곱씹어 보면 결국 이 객체 변수의 값이 독립적으로 유지되기 때문에 가능한 것이다.** 
-    
-    ```java
+```java
     class Animal {
     	String name; // 객체 변수 
     	
@@ -842,34 +880,30 @@ public class Sample {
     				System.out.println(cat.name); // 객체: cat, 객체 변수 : name
         }
     }
-    ```
+```
     
-    Animal 클래스의 인스턴스인 cat, 즉 애니몰 클래스 객체가 생성되었다. 
-    
-    > * 객체와 인스턴스
+Animal 클래스의 인스턴스인 cat, 즉 애니몰 클래스 객체가 생성되었다. 
+-  객체와 인스턴스
     Animal cat = new Animal() 에서 cat은 객체이다. 이는 Animal의 인스턴스이다. 인스턴스는 특정 객체(cat)가 어떤 클래스(Animal)의 객체인지를 관계위로 설명할때 사용된다.
-    > 
-    - 객체변수(Instance variable)
-        
-        인스턴스 변수, 멤버 변수, 속성이라 한다. 
-        
-        객체가 다르다면, 객체 변수의 값은 공유되지 않는다.
-        
-        객체.객체변수  사용 
-        
-        ex) [cat.name](http://cat.name)
-        
-    - 메소드
-        
-        클래스 내에 구현된 함수를 의미,  객체 값에 접근하기 위해 메소드를 사용
-        
-        객체.메소드  사용
-        
-    - 찾아봐야할것 - this
+<br>
+
+- 객체변수(Instance variable)
+인스턴스 변수, 멤버 변수, 속성이라 한다. 
+객체가 다르다면, 객체 변수의 값은 공유되지 않는다.
+객체.객체변수  사용 
+ex) [cat.name](http://cat.name)
+<br>
+
+- 메소드    
+    클래스 내에 구현된 함수를 의미,  객체 값에 접근하기 위해 메소드를 사용
+    객체.메소드  사용
+<br>
+
+- 찾아봐야할것 - this
+<br>
+
 - 메소드
-    
     클래스 내의 함수 = 메소드
-    
     같은 행위를 반복할 때, 메소드로 생성하여 동일한 행위를 처리한다. 
     
     ```java
@@ -927,9 +961,9 @@ public class Sample {
     		
     		// 클래스 멤버 변수와 객체 전달한 경우 
     		int a;  // 객체변수 a
-        ~~void varTest(Sample sample) {~~
+        void varTest(Sample sample) {
     		void varTest(){	
-            ~~sample.a++; // 객체를 다시 반환해주지 않기 때문에, 해당 값은 main에서 적용x~~
+            sample.a++; // 객체를 다시 반환해주지 않기 때문에, 해당 값은 main에서 적용x
     				this.a++; // 클래스 멤버 변수(전역변수)의 값을 직접 수정할 수 있다. 
         }
     
@@ -951,17 +985,15 @@ public class Sample {
     
 - Call by Value
     
-    ** Call by Value(메소드에 원시 자료형 값 전달) vs Call by reference(메소드에 객체를 전달) 
+    **Call by Value(메소드에 원시 자료형 값 전달) vs Call by reference(메소드에 객체를 전달)** 
     
-    Call by Value - 값을 복사하여 새로운 지역변수에 저장
+    - Call by Value - 값을 복사하여 새로운 지역변수에 저장
     
-    Call by reference - **애초에 '참조 타입'인 이유가 Heap Memory 영역에 생성된 객체의 주소값을 참조하기 때문에 객체를 넘기면 해당 객체의 값이 변경된다.**
-    
-- 상속 (Inheritance)
-    
-    자식 클래스가 부모의 클래스의 기능을 그대로 물려받을 수 있는 상속(Inheritance) 기능이 있다. 
-    
-    상속 받을 때는 extends라는 키워드를 사용한다. 
+    - Call by reference - 애초에 '참조 타입'인 이유가 Heap Memory 영역에 생성된 객체의 주소값을 참조하기 때문에 객체를 넘기면 해당 객체의 값이 변경된다.
+<br>
+
+- 상속 (Inheritance)    
+    자식 클래스가 부모의 클래스의 기능을 그대로 물려받을 수 있는 상속(Inheritance) 기능이 있다. 상속 받을 때는 extends라는 키워드를 사용한다. 
     
     - IS-A관계
         
@@ -996,14 +1028,15 @@ public class Sample {
                 }
             }
         ```
+
+<br>
+
+  - 메소드 오버라이팅 ( Method Overriding)  
+    HouseDog클래스에 Dog의 sleep이랑 동일한 형태 메소드 재구현하면 HouseDog.sleep()이 우선순위를 가진다. 
+    
+    **부모클래스의 메소드를 자식클래스가 동일한 형태로 또다시 구현하는 행위를 메소드 오버라이딩(Method Overriding)이라고 한다.** 
         
-    - 메소드 오버라이팅 ( Method Overriding)
-        
-        HouseDog클래스에 Dog의 sleep이랑 동일한 형태 메소드 재구현하면 HouseDog.sleep()이 우선순위를 가진다. 
-        
-        **부모클래스의 메소드를 자식클래스가 동일한 형태로 또다시 구현하는 행위를 메소드 오버라이딩(Method Overriding)이라고 한다.** 
-        
-        ```java
+    ```java
         class Aninal{
         	String name;
         	
@@ -1030,166 +1063,125 @@ public class Sample {
         			houseDog.setName("happy");
         			houseDog.sleep(); // happy zzz in house 출력 
         }
-        ```
+    ```
         
-    - 메소드 오버로딩( Method Overloading)
+  - 메소드 오버로딩( Method Overloading)
         
-        **동일한 이름의 메소드를 추가할 수 있다. 단, 메소드의 입력항목(=매개변수)의 자료형이 다른 경우만 가능하다. 이를 메소드 오버로딩(Method Overloading)이라 부른다.** 
+    **동일한 이름의 메소드를 추가할 수 있다. 단, 메소드의 입력항목(=매개변수)의 자료형이 다른 경우만 가능하다. 이를 메소드 오버로딩(Method Overloading)이라 부른다.** 
         
-        ```java
-        class Aninal{
-        	String name;
-        	
-        	void setName(String name){
-        			this.name = name;
-        	}
-        }
-        
-        class Dog extends Animal{
-        	void sleep(){ // 애니몰의 자식클래스인 Dog 클래스에서 메소드 생성
-        			System.out.println(this.name + " zzz");
-        	}
-        
-        	void sleep(int hour){
-        			System.out.println(this.name + " zzz in house for "+hour + " hours");
-        	}
-        }
-        
-        class HouseDog extends Dog{ // Dog클래스가 부모인, 자식클래스 HouseDog
-        	void sleep(){ // 동일한 메소드를 재정의하여 메소드 오버라이딩 구현
-        			System.out.println(this.name + " zzz in house");
-        	}
-        }
-        
-        public class Sample {
-        	public static void main(String[] args){
-        			HouseDog houseDog = new HouseDog();
-        			houseDog.setName("happy");
-        			houseDog.sleep(); // happy zzz in house 출력 
-        			houseDog.sleep(3); // happy zzz in house for 3 hours 출력
-        }
-        ```
-        
-    - 다중상속
-        
-        자바는 다중상속을 지원하지 않는다. 
-        
-    
-- 생성자 (Constructor)
-    
-    객체를 생성할 당시 처리하고자 하는 것들을 선언하고 프로그래밍할 수 있다. 
-    
-    생성자가 매개변수를 가질 때는 객체를 생성할 때 동일하게 매개변수를 부여해야 한다. 
-    
-    - 생성자 생성 규칙
-        1. 클래스명과 메소드명이 동일하다. 
-        2. 리턴타입을 정의하지 않는다.(void도 사용하지 않는다) 
-    
     ```java
     class Aninal{
-    	String name;
-    	
-    	void setName(String name){
-    			this.name = name;
-    	}
+        String name;
+        
+        void setName(String name){
+                this.name = name;
+        }
     }
     
     class Dog extends Animal{
-    	void sleep(){ // 애니몰의 자식클래스인 Dog 클래스에서 메소드 생성
-    			System.out.println(this.name + " zzz");
-    	}
+        void sleep(){ // 애니몰의 자식클래스인 Dog 클래스에서 메소드 생성
+                System.out.println(this.name + " zzz");
+        }
     
-    	void sleep(int hour){
-    			System.out.println(this.name + " zzz in house for "+hour + " hours");
-    	}
+        void sleep(int hour){
+                System.out.println(this.name + " zzz in house for "+hour + " hours");
+        }
     }
     
     class HouseDog extends Dog{ // Dog클래스가 부모인, 자식클래스 HouseDog
-    	// 하우스도그의 생성자, 매개변수 강아지 이름
-    	HouseDog(String name){
-    			this.setName(name); // 객체 생성시, 별도로 호출하지 않아도 된다. 
-    	}
-    	void sleep(){ // 동일한 메소드를 재정의하여 메소드 오버라이딩 구현
-    			System.out.println(this.name + " zzz in house");
-    	}
+        void sleep(){ // 동일한 메소드를 재정의하여 메소드 오버라이딩 구현
+                System.out.println(this.name + " zzz in house");
+        }
     }
     
     public class Sample {
-    	public static void main(String[] args){
-    			~~HouseDog houseDog = new HouseDog();~~
-    			~~houseDog.setName("happy");~~
-    			HouseDog houseDog = new HouseDog("happy"); 
-    			houseDog.sleep(); // happy zzz in house 출력 
-    			houseDog.sleep(3); // happy zzz in house for 3 hours 출력
+        public static void main(String[] args){
+                HouseDog houseDog = new HouseDog();
+                houseDog.setName("happy");
+                houseDog.sleep(); // happy zzz in house 출력 
+                houseDog.sleep(3); // happy zzz in house for 3 hours 출력
     }
     ```
+        
+- 다중상속
+자바는 다중상속을 지원하지 않는다. 
+<br>        
     
-    - 디폴트(default) 생성자
+- 생성자 (Constructor)
+객체를 생성할 당시 처리하고자 하는 것들을 선언하고 프로그래밍할 수 있다. 
+생성자가 매개변수를 가질 때는 객체를 생성할 때 동일하게 매개변수를 부여해야 한다. 
+<br>
+
+- 생성자 생성 규칙
+    1. 클래스명과 메소드명이 동일하다. 
+    2. 리턴타입을 정의하지 않는다.(void도 사용하지 않는다) 
+<br>    
+  
+- 디폴트(default) 생성자     
+    컴파일러는 클래스내에 생성자를 별도로 생성하지 않으면, 임의의 디폴트 생성자를 자동으로 구현한다. 
         
-        컴파일러는 클래스내에 생성자를 별도로 생성하지 않으면, 임의의 디폴트 생성자를 자동으로 구현한다. 
+    ```java
+    class Dog extends Animal{
+            // 임의로 생성되는 Default 생성자
+            // 코드에 직접 노출되지는 않지만, 컴파일러가 임의로 생성한다. 
+            Dog() {
+            }
+    
+            void sleep(){
+                    System.out.println(this.name + " zzz");
+            }
+    }
+    ```
         
-        ```java
-        class Dog extends Animal{
-        		// 임의로 생성되는 Default 생성자
-        		// 코드에 직접 노출되지는 않지만, 컴파일러가 임의로 생성한다. 
-        		Dog() {
-        		}
+- 생성자 오버로딩
         
-        		void sleep(){
-        				System.out.println(this.name + " zzz");
-        		}
+    하나의 클래스에 여러개의 다른 생성자를 구현하여 오버로딩하도록 만들수 있다. 
+        
+    ```java
+    class Aninal{
+        String name;
+        
+        void setName(String name){
+                this.name = name;
         }
-        ```
-        
-    - 생성자 오버로딩
-        
-        하나의 클래스에 여러개의 다른 생성자를 구현하여 오버로딩하도록 만들수 있다. 
-        
-        ```java
-        class Aninal{
-        	String name;
-        	
-        	void setName(String name){
-        			this.name = name;
-        	}
+    }
+    
+    class Dog extends Animal{
+        void sleep(){ // 애니몰의 자식클래스인 Dog 클래스에서 메소드 생성
+                System.out.println(this.name + " zzz");
         }
-        
-        class Dog extends Animal{
-        	void sleep(){ // 애니몰의 자식클래스인 Dog 클래스에서 메소드 생성
-        			System.out.println(this.name + " zzz");
-        	}
-        }
-        
-        class HouseDog extends Dog{ // Dog클래스가 부모인, 자식클래스 HouseDog
-        	// 하우스도그의 생성자, 매개변수 강아지 이름
-        	HouseDog(String name){
-        			this.setName(name); // 객체 생성시, 별도로 호출하지 않아도 된다. 
-        	}
-        	
-        	// 하우스도그 또 다른 생성자, int형 매개변수 추가
-        	HouseDog(int type){
-        			if ( type = 1){
-        					this.setName("yorkshire");
-        			}
-        			else if( type == 2) {
-        					this.setName("bulldog");
-        			}
-        	}
-        
-        	void sleep(){ // 동일한 메소드를 재정의하여 메소드 오버라이딩 구현
-        			System.out.println(this.name + " zzz in house");
-        	}
+    }
+    
+    class HouseDog extends Dog{ // Dog클래스가 부모인, 자식클래스 HouseDog
+        // 하우스도그의 생성자, 매개변수 강아지 이름
+        HouseDog(String name){
+                this.setName(name); // 객체 생성시, 별도로 호출하지 않아도 된다. 
         }
         
-        public class Sample {
-        	public static void main(String[] args){
-        			HouseDog happy = new HouseDog("happy"); // 1번 생성자 
-        			HouseDog yorkshire = new HouseDog(1); // 2번 생성자
-        
-        			System.out.println(happy.name ); // happy 출력 
-        			System.out.println(yorkshire.name ); // yorkshire 출력
+        // 하우스도그 또 다른 생성자, int형 매개변수 추가
+        HouseDog(int type){
+                if ( type = 1){
+                        this.setName("yorkshire");
+                }
+                else if( type == 2) {
+                        this.setName("bulldog");
+                }
         }
-        ```
+    
+        void sleep(){ // 동일한 메소드를 재정의하여 메소드 오버라이딩 구현
+                System.out.println(this.name + " zzz in house");
+        }
+    }
+    
+    public class Sample {
+        public static void main(String[] args){
+                HouseDog happy = new HouseDog("happy"); // 1번 생성자 
+                HouseDog yorkshire = new HouseDog(1); // 2번 생성자
+    
+                System.out.println(happy.name ); // happy 출력 
+                System.out.println(yorkshire.name ); // yorkshire 출력
+    }
+    ```
         
     
 - 인터페이스
@@ -1223,12 +1215,12 @@ public class Sample {
     
     class ZooKeeper {
     		// 변경전 각 자식클래스를 객체로 하여 따로 따로 구현
-        ~~void feed(Tiger tiger) {
+        void feed(Tiger tiger) {
             System.out.println("feed apple");
         }
         void feed(Lion lion) {
             System.out.println("feed banana");
-        }~~
+        }
     		// 변경 후 인터페이스를 이용한 구현
         void feed(Predator predator) {
             System.out.println("feed "+predator.getFood());
@@ -1289,198 +1281,198 @@ public class Sample {
         ```
         
     
-- ##다형성
+
+## **다형성**
     
-    폴리모피즘, Polymorphism 다형성은 하나의 객체가 여러개의 자료형 타입을 가질 수 있는 것
+폴리모피즘, Polymorphism 다형성은 하나의 객체가 여러개의 자료형 타입을 가질 수 있는 것
+*자식클래스는 부모클래스, 부모인터페이스 자료형으로 자유롭게 변환 가능*
     
-    *자식클래스는 부모클래스, 부모인터페이스 자료형으로 자유롭게 변환 가능*
+```java
+Tiger tiger = new Tiger(); 
+Animal animal = new Tiger(); // 부모클래스 자료형에 자식 클래스 객체 생성
+Predator predator = new Tiger(); // 부모인터페이스 자료형에 자식 클래스 객체 생성
+Barkable barkable = new Tiger(); // 부모인터페이스 자료형에 자식 클래스 객체 생성
+```
     
-    ```java
-    Tiger tiger = new Tiger(); 
-    Animal animal = new Tiger(); // 부모클래스 자료형에 자식 클래스 객체 생성
-    Predator predator = new Tiger(); // 부모인터페이스 자료형에 자식 클래스 객체 생성
-    Barkable barkable = new Tiger(); // 부모인터페이스 자료형에 자식 클래스 객체 생성
-    ```
-    
-    - 다형성 예시
-        
-        ```java
-        interface Predator{
-        		String getFood();
-        
-        		default void printFood() { // 별도의 구현없이 사용가능, 또한 오버라이딩도 가능!
-        				System.out.printf("my food is %s\n", getFood());
-        		}
-        		
-        		int LEG_COUNT = 4; 
-        
-        		static int speed(){
-        				return LEG_COUNT * 30;
-        		}
-        }
-        
-        public interface Barkable {
-            void bark();
-        }
-        
-        // 인터페이스는 다중 상속 가능하다. 
-        // 동물로써 먹이 주는 것과, speed를 구현한 것 + 짖는 기능 합쳐 놓은 인터페이스
-        public interface BarkablePredator extends Predator, Barkable{
-        }
-        
-        class Animal {
-            String name;
-        
-            void setName(String name) {
-                this.name = name;
-            }
-        }
-        
-        class Tiger extends Animal implements BarkablePredator {
-        		// 강제적으로 인터페이스에 구현되어 있는 메소드이므로 구현해야 한다. 
-        		public String getFood(){ 
-        				return "apple";
-        		}
-        
-        		public void bark(){
-        			System.out.println("어흥");
-        		}
-        }
-        
-        class Lion extends Animal implements BarkablePredator {
-        		// 강제적으로 인터페이스에 구현되어 있는 메소드이므로 구현해야 한다. 
-        		public String getFood(){ 
-        				return "banana";
-        		}
-        
-        		public void bark(){
-        			System.out.println("으르렁");
-        		}
-        
-        }
-        
-        class ZooKeeper {
-        ~~~~    void feed(Predator predator) {
-                System.out.println("feed "+predator.getFood());
-            }
-        }
-        
-        class Bouncer { // 짖는 기능만을 가진 interface
-        ~~~~    void barkAnimal(Barkable animal) {
-                animal.bark();
-            }
-        }
-        
-        public class Sample {
-        	public static void main(String[] args){
-        			Tiger tiger = new Tiger();
-        			Lion lion = new Lion();
-        
-        			Bouncer bouncer = new Bouncer();
-        			bouncer.barAnimal(tiger); // barkerable이 부모 이므로 사용 가능
-        			bouncer.barAnimal(lion); // barkerable이 부모 이므로 사용 가능
-        	}
-        }
-        ```
+  - 다형성 예시
+      
+      ```java
+      interface Predator{
+      		String getFood();
+      
+      		default void printFood() { // 별도의 구현없이 사용가능, 또한 오버라이딩도 가능!
+      				System.out.printf("my food is %s\n", getFood());
+      		}
+      		
+      		int LEG_COUNT = 4; 
+      
+      		static int speed(){
+      				return LEG_COUNT * 30;
+      		}
+      }
+      
+      public interface Barkable {
+          void bark();
+      }
+      
+      // 인터페이스는 다중 상속 가능하다. 
+      // 동물로써 먹이 주는 것과, speed를 구현한 것 + 짖는 기능 합쳐 놓은 인터페이스
+      public interface BarkablePredator extends Predator, Barkable{
+      }
+      
+      class Animal {
+          String name;
+      
+          void setName(String name) {
+              this.name = name;
+          }
+      }
+      
+      class Tiger extends Animal implements BarkablePredator {
+      		// 강제적으로 인터페이스에 구현되어 있는 메소드이므로 구현해야 한다. 
+      		public String getFood(){ 
+      				return "apple";
+      		}
+      
+      		public void bark(){
+      			System.out.println("어흥");
+      		}
+      }
+      
+      class Lion extends Animal implements BarkablePredator {
+      		// 강제적으로 인터페이스에 구현되어 있는 메소드이므로 구현해야 한다. 
+      		public String getFood(){ 
+      				return "banana";
+      		}
+      
+      		public void bark(){
+      			System.out.println("으르렁");
+      		}
+      
+      }
+      
+      class ZooKeeper {
+         void feed(Predator predator) {
+              System.out.println("feed "+predator.getFood());
+          }
+      }
+      
+      class Bouncer { // 짖는 기능만을 가진 interface
+          void barkAnimal(Barkable animal) {
+              animal.bark();
+          }
+      }
+      
+      public class Sample {
+      	public static void main(String[] args){
+      			Tiger tiger = new Tiger();
+      			Lion lion = new Lion();
+      
+      			Bouncer bouncer = new Bouncer();
+      			bouncer.barAnimal(tiger); // barkerable이 부모 이므로 사용 가능
+      			bouncer.barAnimal(lion); // barkerable이 부모 이므로 사용 가능
+      	}
+      }
+      ```
         
     
-- ##추상클래스
+##추상클래스
     
-    인터페이스의 역할도 하면서 클래스의 기능도 가지고 있는 클래스
-    
-    - class 앞의 키워드 abstract를 붙여야 한다.
-    - 인터페이스 역할을 하는 메소드에도 abstract를 붙여야 한다.
-    - 인터페이스와 달리, static, final 상수들도 해당 키워드를 붙여야 변경불가능하다.
-    
-    > 인터스페이스와 추상 클래스의 차이
-    자바8버젼부터 인터페이스에 default 메소드가 추가되어 추상 클래스와의 차이점이 살짝 모호해졌다. 하지만 추상 클래스는 인터페이스와는 달리 일반 클래스처럼 객체변수, 생성자, private 메소드 등을 가질 수 있다.
-    > 
-    - 예시
-        
-        ```java
-        ~~interface Predator{~~
-        abstract class Predator extends Animal{
-        		**abstract** String getFood(); // 추상클래스로 변경되며 메소드도 abstract으로 정의
-        
-        		~~default~~ void printFood() { // 추상클래스 이므로 default 키워드 삭제 
-        				System.out.printf("my food is %s\n", getFood());
-        		}
-        		
-        		**static** int LEG_COUNT = 4; // static 추가 선언
-        
-        		static int speed(){
-        				return LEG_COUNT * 30;
-        		}
-        }
-        
-        public interface Barkable {
-            void bark();
-        }
-        
-        // 인터페이스는 다중 상속 가능하다. 
-        // 동물로써 먹이 주는 것과, speed를 구현한 것 + 짖는 기능 합쳐 놓은 인터페이스
-        // **Predator를 추상클래스로 변경하며 해당 인터페이스 사용할 수 없다.** 
-        ~~public interface BarkablePredator extends Predator, Barkable{
-        }~~
-        
-        class Animal {
-            String name;
-        
-            void setName(String name) {
-                this.name = name;
-            }
-        }
-        
-        ~~class Tiger extends Animal implements BarkablePredator {~~
-        class Tiger extends Predator implements Barkable {
-        		// Animal을 상속받은 추상클래스 Predator를 상속 받고 
-        		// 짖는 기능은 Barkable 인터페이스를 통해 정의한다. 
-        		public String getFood(){ 
-        				return "apple";
-        		}
-        
-        		public void bark(){
-        			System.out.println("어흥");
-        		}
-        }
-        
-        ~~class Lion extends Animal implements BarkablePredator {~~
-        class Lion extends Predator implements Barkable {
-        		// Animal을 상속받은 추상클래스 Predator를 상속 받고 
-        		// 짖는 기능은 Barkable 인터페이스를 통해 정의한다. 
-        		public String getFood(){ 
-        				return "banana";
-        		}
-        
-        		public void bark(){
-        			System.out.println("으르렁");
-        		}
-        
-        }
-        
-        class ZooKeeper {
-        ~~~~    void feed(Predator predator) {
-                System.out.println("feed "+predator.getFood());
-            }
-        }
-        
-        class Bouncer { // 짖는 기능만을 가진 interface
-        ~~~~    void barkAnimal(Barkable animal) {
-                animal.bark();
-            }
-        }
-        
-        public class Sample {
-        	public static void main(String[] args){
-        			Tiger tiger = new Tiger();
-        			Lion lion = new Lion();
-        
-        			Bouncer bouncer = new Bouncer();
-        			bouncer.barAnimal(tiger); // barkerable이 부모 이므로 사용 가능
-        			bouncer.barAnimal(lion); // barkerable이 부모 이므로 사용 가능
-        	}
-        }
-        ```
+인터페이스의 역할도 하면서 클래스의 기능도 가지고 있는 클래스
+
+- class 앞의 키워드 abstract를 붙여야 한다.
+- 인터페이스 역할을 하는 메소드에도 abstract를 붙여야 한다.
+- 인터페이스와 달리, static, final 상수들도 해당 키워드를 붙여야 변경불가능하다.
+
+> **인터스페이스와 추상 클래스의 차이**
+자바8버젼부터 인터페이스에 default 메소드가 추가되어 추상 클래스와의 차이점이 살짝 모호해졌다. 하지만 추상 클래스는 인터페이스와는 달리 일반 클래스처럼 객체변수, 생성자, private 메소드 등을 가질 수 있다.
+
+  - 예시
+      
+      ```java
+      interface Predator{
+      abstract class Predator extends Animal{
+      		**abstract** String getFood(); // 추상클래스로 변경되며 메소드도 abstract으로 정의
+      
+      		default void printFood() { // 추상클래스 이므로 default 키워드 삭제 
+      				System.out.printf("my food is %s\n", getFood());
+      		}
+      		
+      		**static** int LEG_COUNT = 4; // static 추가 선언
+      
+      		static int speed(){
+      				return LEG_COUNT * 30;
+      		}
+      }
+      
+      public interface Barkable {
+          void bark();
+      }
+      
+      // 인터페이스는 다중 상속 가능하다. 
+      // 동물로써 먹이 주는 것과, speed를 구현한 것 + 짖는 기능 합쳐 놓은 인터페이스
+      // **Predator를 추상클래스로 변경하며 해당 인터페이스 사용할 수 없다.** 
+      public interface BarkablePredator extends Predator, Barkable{
+      }
+      
+      class Animal {
+          String name;
+      
+          void setName(String name) {
+              this.name = name;
+          }
+      }
+      
+      class Tiger extends Animal implements BarkablePredator {
+      class Tiger extends Predator implements Barkable {
+      		// Animal을 상속받은 추상클래스 Predator를 상속 받고 
+      		// 짖는 기능은 Barkable 인터페이스를 통해 정의한다. 
+      		public String getFood(){ 
+      				return "apple";
+      		}
+      
+      		public void bark(){
+      			System.out.println("어흥");
+      		}
+      }
+      
+      class Lion extends Animal implements BarkablePredator {
+      class Lion extends Predator implements Barkable {
+      		// Animal을 상속받은 추상클래스 Predator를 상속 받고 
+      		// 짖는 기능은 Barkable 인터페이스를 통해 정의한다. 
+      		public String getFood(){ 
+      				return "banana";
+      		}
+      
+      		public void bark(){
+      			System.out.println("으르렁");
+      		}
+      
+      }
+      
+      class ZooKeeper {
+          void feed(Predator predator) {
+              System.out.println("feed "+predator.getFood());
+          }
+      }
+      
+      class Bouncer { // 짖는 기능만을 가진 interface
+          void barkAnimal(Barkable animal) {
+              animal.bark();
+          }
+      }
+      
+      public class Sample {
+      	public static void main(String[] args){
+      			Tiger tiger = new Tiger();
+      			Lion lion = new Lion();
+      
+      			Bouncer bouncer = new Bouncer();
+      			bouncer.barAnimal(tiger); // barkerable이 부모 이므로 사용 가능
+      			bouncer.barAnimal(lion); // barkerable이 부모 이므로 사용 가능
+      	}
+      }
+      ```
         
 
 # 자바의 날개달기
@@ -1507,49 +1499,50 @@ public class Sample {
         
         static 키워드를 붙이면 자바는 메모리 할당을 딱 한번만 하게 되어 메모리 사용에 이점이 있다. 
         
-        > 만약, 변경되지 않기를 바란다면 static 키워드 앞에 final이라는 키워드를 붙인다.
-        > 
+        **만약, 변경되지 않기를 바란다면 static 키워드 앞에 final이라는 키워드를 붙인다.**
         
         static을 사용하는 이유
         
         - 공유 : static으로 설정하면 같은 곳의 메모리 주소만을 바라보기 때문에 변수의 값을 공유한다.
-        
+<br>
+
     - static 메소드
         
         Counter.getCount()와 같이 객체 생성없이 메소드를 직접 호출할 수 있다. 
         
         계산, 날짜구하기 등 Util성 메소드인 경우 사용한다.  
-        
+<br>
+
     - 싱글톤 패턴(singleton pattern)
         
         1개의 객체만 생성할 수 있도록 한다. 
         
         ```java
         class Singleton{
-        		private static Singleton one;
-        		// 다른 클래스에서 생성자 직접 호출이 어렵다. 
-        		private Singleton(){
-        		}
-        		
-        		// 다른 클래스에서 기존 생성자를 직접호출하지 않고 getInstance를 통해 호출
-        		public static Singleton getInstance(){
-        			// Singleton 클래스에서 객체는 오직 1번만 생성 되도록 처리
-        			if(one == null){
-        				one = new Singleton()
-        			}
-        			return one;
-        		}
+            private static Singleton one;
+            // 다른 클래스에서 생성자 직접 호출이 어렵다. 
+            private Singleton(){
+            }
+            
+            // 다른 클래스에서 기존 생성자를 직접호출하지 않고 getInstance를 통해 호출
+            public static Singleton getInstance(){
+                // Singleton 클래스에서 객체는 오직 1번만 생성 되도록 처리
+                if(one == null){
+                    one = new Singleton()
+                }
+                return one;
+            }
         }
         
         public class Sample{
-        		public static void main(String[] args){
-        				Singleton singleton1 = new Singleton.getInstance();
-        				Singleton singleton2 = new Singleton.getInstance();
-        				System.out.println(singleton1 == singleton2); // true 출력
-        				// Singleton 클래스에서 객체는 1번만 생성 되어
-        				// singleton2도 singleton1에서 만든 객체를 바라본다. 
-        				// 이 예제는 Thread Safe 하지 않다. 
-        		}
+            public static void main(String[] args){
+                    Singleton singleton1 = new Singleton.getInstance();
+                    Singleton singleton2 = new Singleton.getInstance();
+                    System.out.println(singleton1 == singleton2); // true 출력
+                    // Singleton 클래스에서 객체는 1번만 생성 되어
+                    // singleton2도 singleton1에서 만든 객체를 바라본다. 
+                    // 이 예제는 Thread Safe 하지 않다. 
+            }
         }
         ```
         
@@ -1602,173 +1595,174 @@ public class Sample {
         ```java
         int c;
         try{
-        		c = 4/0;
+            c = 4/0;
         }catch(ArithmeticException e){
-        		c = -1;
+            c = -1;
         }
+    ```
+        
+- finally  
+  어떤 예외가 발생하더라도 꼭 수행되어야 하는 부분이 있다면 finally 문으로 정의 
+<br>
+
+    ```java
+    public class Sample{
+        public void shouldBeRun(){
+                System.out.println("ok thanks");
+        }
+
+        public static void main(String[] args){
+            Sample sample = new Sample();
+            int c;
+
+            try{
+                    c = 4/0;
+            }catch(ArithmeticException e){
+                    c = -1;
+            }finally{ // 예외와 상관없이 무조건 수행된다. 
+                    sample.shouldBeRun();
+            }
+        }
+    }
         ```
         
-    - finally
-        
-        어떤 예외가 발생하더라도 꼭 수행되어야 하는 부분이 있다면 finally 문으로 정의 
-        
-        ```java
-        public class Sample{
-        		public void shouldBeRun(){
-        				System.out.println("ok thanks");
-        		}
-        
-        		public static void main(String[] args){
-        				Sample sample = new Sample();
-        				int c;
-        
-        				try{
-        						c = 4/0;
-        				}catch(ArithmeticException e){
-        						c = -1;
-        				}finally{ // 예외와 상관없이 무조건 수행된다. 
-        						sample.shouldBeRun();
-        				}
-        		}
-        }
-        ```
-        
-    - RuntimeException과 Exception
-        - RuntimeException : 실행시 발생하는 예외
+- RuntimeException과 Exception
+  - RuntimeException : 실행시 발생하는 예외
             
-            ```java
-            public class FoolException extends RuntimeException{
+    ```java
+    public class FoolException extends RuntimeException{
+    }
+    
+    public class Sample{
+        public void sayNick(String nick){
+            if("fool".equals(nick)){
+                throw  new FoolException();
             }
-            
-            public class Sample{
-                public void sayNick(String nick){
-                    if("fool".equals(nick)){
-                        throw  new FoolException();
-                    }
-                    System.out.println("당신의 별명은 "+nick+" 입니다.");
-                }
-                
-                public static void main(String[] args){
-                    Sample sample = new Sample();
-                    sample.sayNick("fool");
-                    sample.sayNick("genious");
-                }
-            }
-            
-            =====================================
-            Exception in thread "main" FoolException
-                at Sample.sayNick(Sample.java:7)
-                at Sample.main(Sample.java:14)
-            ```
-            
-        - Exception : 컴파일 시 발생하는 예외
-            
-            ```java
-            public class FoolException extends Exception{
-            }
-            
-            public class Sample{
-                public void sayNick(String nick){
-                    try {
-                        if ("fool".equals(nick)) {
-                            throw new FoolException();
-                        }
-                        System.out.println("당신의 별명은 "+nick+" 입니다.");
-                    }catch (FoolException e){
-                        System.err.println("FoolException이 발생하였습니다.");
-                    }
-                }
-            
-                public static void main(String[] args){
-                    Sample sample = new Sample();
-                    sample.sayNick("fool");
-                    sample.sayNick("genious");
-                }
-            }
-            ```
-            
-    - 예외 던지기 (throws)
-        
-        Exception을 처리하는 level에 따라서 프로그램의 수행여부를 결정하기도 하고 트랜제션 처리와도 밀접한 관계를 가지고 있다. 
-        
-        ex) 데이타를 업데이트 하는데 주소지 1, 주소지2 업데이트 중 메소드단에 exception이 존재하였다면, 주소지1은 오류가 났지만 주소지2는 업데이트가 되어 잘못된 주소가 되었을 수 있다. 이런 경우는 주소지1, 주소지2 모두 동시에 rollback 혹은 업데이트가 되어야 한다. 그래서 main과 같이 메소드를 호출하는 쪽에서 exception 처리를 하는 것이 낫다. 
-        
-        ```java
-        public class FoolException extends Exception{
+            System.out.println("당신의 별명은 "+nick+" 입니다.");
         }
         
-        public class Sample{
-        		// throw FoolException 처리하면, Exception은 상위단계로 보낼수 있다. 
-        		// 이것이 바로 예외를 뒤로 미루기라고도 한다. 
-            public void sayNick(String nick) ***throw FoolException***{
-                ~~**try {**~~
-                    if ("fool".equals(nick)) {
-                        throw new FoolException();
-                    }
-                    System.out.println("당신의 별명은 "+nick+" 입니다.");
-                ~~**}catch (FoolException e){
-                    System.err.println("FoolException이 발생하였습니다.");
-                }**~~
-            }
-        		
-        		// main에서 예외처리가 되면, sayNick fool에서 exception이 발생하여
-        		// genious는 처리 되지 않는다. 
-            public static void main(String[] args){
-                Sample sample = new Sample();
-        				***try{***
-        	        sample.sayNick("fool");
-        	        sample.sayNick("genious");
-        				***} catch(FoodException e){
-        						System.err.println("FoolException이 발생하였습니다.");
-        				}***
+        public static void main(String[] args){
+            Sample sample = new Sample();
+            sample.sayNick("fool");
+            sample.sayNick("genious");
+        }
+    }
+    
+    =====================================
+    Exception in thread "main" FoolException
+        at Sample.sayNick(Sample.java:7)
+        at Sample.main(Sample.java:14)
+    ```
+            
+    - Exception : 컴파일 시 발생하는 예외
+            
+    ```java
+    public class FoolException extends Exception{
+    }
+    
+    public class Sample{
+        public void sayNick(String nick){
+            try {
+                if ("fool".equals(nick)) {
+                    throw new FoolException();
+                }
+                System.out.println("당신의 별명은 "+nick+" 입니다.");
+            }catch (FoolException e){
+                System.err.println("FoolException이 발생하였습니다.");
             }
         }
-        ```
+    
+        public static void main(String[] args){
+            Sample sample = new Sample();
+            sample.sayNick("fool");
+            sample.sayNick("genious");
+        }
+    }
+    ```
+            
+  - 예외 던지기 (throws)
         
-    - 트랜잭션 (Transaction)
+    Exception을 처리하는 level에 따라서 프로그램의 수행여부를 결정하기도 하고 트랜제션 처리와도 밀접한 관계를 가지고 있다. 
+
+    ex) 데이타를 업데이트 하는데 주소지 1, 주소지2 업데이트 중 메소드단에 exception이 존재하였다면, 주소지1은 오류가 났지만 주소지2는 업데이트가 되어 잘못된 주소가 되었을 수 있다. 이런 경우는 주소지1, 주소지2 모두 동시에 rollback 혹은 업데이트가 되어야 한다. 그래서 main과 같이 메소드를 호출하는 쪽에서 exception 처리를 하는 것이 낫다. 
         
-        트랜잭션 : 하나의 작업 단위
-        
-        > **수도코드란?**
-        수도코드( pseudocode)는 특정 프로그래밍 언어의 문법을 따라 씌여진 것이 아니라, 일반적인 언어로 코드를 흉내내어 알고리즘을 써놓은 코드를 말한다.  특정 언어로 프로그램을 작성하기 전에 알고리즘의 모델을 대략적으로 모델링하는데 쓰인다.
-        > 
-        
-        ```java
-        상품발송() {
+    ```java
+    public class FoolException extends Exception{
+    }
+    
+    public class Sample{
+            // throw FoolException 처리하면, Exception은 상위단계로 보낼수 있다. 
+            // 이것이 바로 예외를 뒤로 미루기라고도 한다. 
+        public void sayNick(String nick) ***throw FoolException***{
             **try {**
-                포장();
-                영수증발행();
-                발송();
-            **}catch(예외) {
-                모두취소();  // 하나라도 실패하면 모두 취소한다.
+                if ("fool".equals(nick)) {
+                    throw new FoolException();
+                }
+                System.out.println("당신의 별명은 "+nick+" 입니다.");
+            **}catch (FoolException e){
+                System.err.println("FoolException이 발생하였습니다.");
             }**
         }
-        // 포장, 영수증발행, 발송에서 각각 예외처리가 되고 상품발송에 전체 취소가 없다면 
-        // 각 단계에서 일괄적으로 처리 되지 않기 때문에 제각각 취소인데 포장되거 발송되거나 할수 있다. 
-        포장() throws 예외 {
-           ~~try {
-               ...
-            }catch(예외) {
-               포장취소();
-            }~~
+            
+            // main에서 예외처리가 되면, sayNick fool에서 exception이 발생하여
+            // genious는 처리 되지 않는다. 
+        public static void main(String[] args){
+            Sample sample = new Sample();
+                    ***try{***
+                sample.sayNick("fool");
+                sample.sayNick("genious");
+                    ***} catch(FoodException e){
+                            System.err.println("FoolException이 발생하였습니다.");
+                    }***
         }
+    }
+    ```
         
-        영수증발행() throws 예외 {
-        		~~try {
-               ...
-            }catch(예외) {
-               영수증발행취소();
-            }~~
-        }
+  - 트랜잭션 (Transaction)
         
-        발송() throws 예외 {
-        		~~try {
-               ...
-            }catch(예외) {
-               발송취소();
-            }~~
+    트랜잭션 : 하나의 작업 단위
+<br>
+
+    > **수도코드란?**
+    수도코드( pseudocode)는 특정 프로그래밍 언어의 문법을 따라 씌여진 것이 아니라, 일반적인 언어로 코드를 흉내내어 알고리즘을 써놓은 코드를 말한다.  특정 언어로 프로그램을 작성하기 전에 알고리즘의 모델을 대략적으로 모델링하는데 쓰인다.
+        
+        
+    ```java
+    상품발송() {
+        **try {**
+            포장();
+            영수증발행();
+            발송();
+        **}catch(예외) {
+            모두취소();  // 하나라도 실패하면 모두 취소한다.
+        }**
+    }
+    // 포장, 영수증발행, 발송에서 각각 예외처리가 되고 상품발송에 전체 취소가 없다면 
+    // 각 단계에서 일괄적으로 처리 되지 않기 때문에 제각각 취소인데 포장되거 발송되거나 할수 있다. 
+    포장() throws 예외 {
+        try {
+            ...
+        }catch(예외) {
+            포장취소();
         }
-        ```
+    }
+    
+    영수증발행() throws 예외 {
+            try {
+            ...
+        }catch(예외) {
+            영수증발행취소();
+        }
+    }
+    
+    발송() throws 예외 {
+            try {
+            ...
+        }catch(예외) {
+            발송취소();
+        }
+    }
+    ```
         
 - 쓰레드 (Thread)
     
@@ -1805,7 +1799,7 @@ public class Sample {
         }
         ```
         
-    - **** 쓰레드가 종료되지 않았는데, 그 다음 로직을 수행하도록 하는 것이 있다면 join을 사용하여 완전 종료 후에 처리한다.**
+    - **쓰레드가 종료되지 않았는데, 그 다음 로직을 수행하도록 하는 것이 있다면 join을 사용하여 완전 종료 후에 처리한다.**
     - Join
         
         쓰레드가 종료되기 전까지 main을 종료시키지 않는다. 
@@ -1860,7 +1854,7 @@ public class Sample {
             ```java
             import java.util.ArrayList;
             
-            ~~public class Sample extends Thread {~~
+            public class Sample extends Thread {
             public class Sample implements Runnable {
                 int seq;
                 public Sample(int seq) {
@@ -1879,7 +1873,7 @@ public class Sample {
                 public static void main(String[] args) {
                     ArrayList<Thread> threads = new ArrayList<>();
                     for(int i=0; i<10; i++) {
-                        ~~Thread t = new Sample(i);~~
+                        Thread t = new Sample(i);
                         Thread t = new Thread(Sample(i)); 
             						// Sample이 Runnable의 구현체이므로 해당 객체를 넘겨주어야 한다.  
                         t.start();
@@ -1898,8 +1892,7 @@ public class Sample {
             }
             ```
             
-        
-    - 
+
 - 함수형 프로그래밍
     
     Java8 부터 함수형 프로그래밍을 지원하기 위해 람다와 스트림이 도입되었다. 
@@ -1922,16 +1915,16 @@ public class Sample {
             int sum(int a, int b);
         }
         
-        ~~class MyCalculator implements  Calculator {
+        class MyCalculator implements  Calculator {
             public int sum(int a, int b) {
                 return a+b;
             }
-        }~~
+        }
         
         public class Sample {
             public static void main(String[] args) {
         				// 람다를 사용하여 MyCalculator 클래스를 별도로 선언하지 않을 수 있다. 
-                ~~MyCalculator mc = new MyCalculator();~~
+                MyCalculator mc = new MyCalculator();
         				// 1) 람다를 사용하여 메소드 구현없이 Integer::sum을 이용하여 구현할 수 있다. 
         				Calculator mc = (int a, int b) -> a +b;
         				// 2) 함수형 프로그래밍을 위해 제공되는 인터페이스들을 사용하여 축약
@@ -1947,64 +1940,94 @@ public class Sample {
         ```
         
     - 스트림(Stream)
-        
         데이타가 물결처럼 흘러가면서 필터링 과정을 통해 여러번 변경되어 반환되기 때문에 Stream 이란 이름을 가지게 됨. 
-        
+<br>
+
+        <스트림 API의 특징> 
+
+        1. 스트림은 외부 반복을 통해 작업하는 컬렉션과는 달리 내부 반복(internal iteration)을 통해 작업을 수행합니다.
+        2. 스트림은 재사용이 가능한 컬렉션과는 달리 단 한 번만 사용할 수 있습니다.
+        3. 스트림은 원본 데이터를 변경하지 않습니다.
+        4. 스트림의 연산은 필터-맵(filter-map) 기반의 API를 사용하여 지연(lazy) 연산을 통해 성능을 최적화합니다.
+        5. 스트림은 parallelStream() 메소드를 통한 손쉬운 병렬 처리를 지원합니다. 
+<br>
+
+        <스트림 API의 동작 흐름>
+
+        1. 스트림의 생성
+        2. 스트림의 중개 연산 (스트림의 변환)
+        3. 스트림의 최종 연산 (스트림의 사용)
+<br>
+          
+        <스트림의 생성>
+        스트림 API는 다음과 같은 다양한 데이터 소스에서 생성할 수 있습니다.
+
+        1. 컬렉션
+        2. 배열
+        3. 가변 매개변수
+        4. 지정된 범위의 연속된 정수
+        5. 특정 타입의 난수들
+        6. 람다 표현식
+        7. 파일
+        8. 빈 스트림
+<br>
+
+        <예시>
         1. 짝수만 포함하는 ArrayList 생성
         2. Set을 사용하여 중복을 제거
         3. Set을 다시 List로 변경
         4. 역순으로 정렬
         5. Integer 리스트를 정수 배열로 변환
-        - 소스코드 (OLD)
-            
-            ```java
-            public class Sample {
-                public static void main(String[] args) {
-                    int[] data = {5, 6, 4, 2, 3, 1, 1, 2, 2, 4, 8};
-            
-                    // 짝수만 포함하는 ArrayList 생성
-                    ArrayList<Integer> dataList = new ArrayList<>();
-                    for(int i=0; i<data.length; i++) {
-                        if(data[i] % 2 == 0) {
-                            dataList.add(data[i]);
-                        }
-                    }
-            
-                    // Set을 사용하여 중복을 제거
-                    HashSet<Integer> dataSet = new HashSet<>(dataList);
-            
-                    // Set을 다시 List로 변경
-                    ArrayList<Integer> distinctList = new ArrayList<>(dataSet);
-            
-                    // 역순으로 정렬
-                    distinctList.sort(Comparator.reverseOrder());
-            
-                    // Integer 리스트를 정수 배열로 변환
-                    int[] result = new int[distinctList.size()];
-                    for(int i=0; i< distinctList.size(); i++) {
-                        result[i] = distinctList.get(i);
+   
+     - 소스코드 (OLD)
+        ```java
+        public class Sample {
+            public static void main(String[] args) {
+                int[] data = {5, 6, 4, 2, 3, 1, 1, 2, 2, 4, 8};
+        
+                // 짝수만 포함하는 ArrayList 생성
+                ArrayList<Integer> dataList = new ArrayList<>();
+                for(int i=0; i<data.length; i++) {
+                    if(data[i] % 2 == 0) {
+                        dataList.add(data[i]);
                     }
                 }
-            }
-            ```
-            
-        - 소스코드 (NEW)
-            
-            ```java
-            import java.util.Arrays;
-            import java.util.Comparator;
-            
-            public class Sample {
-                public static void main(String[] args) {
-                    int[] data = {5, 6, 4, 2, 3, 1, 1, 2, 2, 4, 8};
-                    int[] result = Arrays.stream(data)  // IntStream을 생성한다.
-                            .boxed()  // IntStream을 Stream<Integer>로 변경한다.
-                            .filter((a) -> a % 2 == 0)  //  짝수만 걸러낸다.
-                            .distinct()  // 중복을 제거한다.
-                            .sorted(Comparator.reverseOrder())  // 역순으로 정렬한다.
-                            .mapToInt(Integer::intValue)  // Stream<Integer>를 IntStream으로 변경한다.
-                            .toArray()  // int[] 배열로 반환한다.
-                            ;
+        
+                // Set을 사용하여 중복을 제거
+                HashSet<Integer> dataSet = new HashSet<>(dataList);
+        
+                // Set을 다시 List로 변경
+                ArrayList<Integer> distinctList = new ArrayList<>(dataSet);
+        
+                // 역순으로 정렬
+                distinctList.sort(Comparator.reverseOrder());
+        
+                // Integer 리스트를 정수 배열로 변환
+                int[] result = new int[distinctList.size()];
+                for(int i=0; i< distinctList.size(); i++) {
+                    result[i] = distinctList.get(i);
                 }
             }
-            ```
+        }
+        ```
+            
+    - 소스코드 (NEW)          
+
+        ```java
+        import java.util.Arrays;
+        import java.util.Comparator;
+        
+        public class Sample {
+            public static void main(String[] args) {
+                int[] data = {5, 6, 4, 2, 3, 1, 1, 2, 2, 4, 8};
+                int[] result = Arrays.stream(data)  // IntStream을 생성한다.
+                        .boxed()  // IntStream을 Stream<Integer>로 변경한다.
+                        .filter((a) -> a % 2 == 0)  //  짝수만 걸러낸다.
+                        .distinct()  // 중복을 제거한다.
+                        .sorted(Comparator.reverseOrder())  // 역순으로 정렬한다.
+                        .mapToInt(Integer::intValue)  // Stream<Integer>를 IntStream으로 변경한다.
+                        .toArray()  // int[] 배열로 반환한다.
+                        ;
+            }
+        }
+        ```
