@@ -236,3 +236,276 @@ else
 * 노드 개수 세기
   임의의 노드를 시작점으로 선택하고 다음노드가 시작 노드와 같아질때까지 순환하며 개수를 센다. 
 
+
+### 버킷 정렬 알고리즘(Bucket Sort)
+자료를 버킷이라는 단위 기억 장소에 정렬하고 버킷별 키 값에 따라 다시 정렬하는 알고리즘 
+**버킷 정렬은 데이터 모양에 따른 제한이 존재, 데이터 1, 1000이면 1000개의 데이터 공간이 필요**
+
+- 정렬할 데이터 확보
+- 정렬할 데이터 숫자 이상의 공간을 확보 후, 숫자를 차례대로 할당
+- 데이터를 각자 위치에 넣습니다. 
+
+### 기수 정렬 알고리즘(Radix Sort) 
+버킷정렬의 개선 버젼, 각 자릿수별로 버킷 정렬을 반복 수행하는 방법
+```java
+import java.util.Arrays;
+
+public class RadixSort {
+    public static void main(String[] args){
+        int[] array = {12,326,127,467,110, 58};
+        array = rSort(array);
+        System.out.println(Arrays.toString(array));
+    }
+
+    private static int[] rSort(int[] array) {
+        for(int shift=Integer.SIZE -1; shift > -1; shift--){
+            int[] tmp = new int[array.length];
+            int j=0;
+            System.out.println(shift + "-1=> " + Arrays.toString(array));
+            for(int i=0; i < array.length;i++){
+                boolean move = array[i] << shift >= 0;
+                if(shift == 0 ? ! move : move){
+                    tmp[j] = array[i];
+                    j++;
+                } else{
+                    array[i - j] = array[i];
+                }
+            }
+            System.out.println(shift + "-2=> " + Arrays.toString(array));
+
+            for(int i=j; i < tmp.length;i++){
+                tmp[i] = array[i-j];
+            }
+            array = tmp;
+            System.out.println(shift + "-3=> " + Arrays.toString(array));
+        }
+        return array;
+    }
+}
+
+```
+
+### 선택 정렬 알고리즘(Selection Sort)
+가장 작은 데이터를 찾아 가장 앞 데이터와 교환하는 알고리즘 
+- 데이터 중에서 가장 작은 것을 찾아서 처음에 있는 것과 위치를 교환
+- 두번째부터 마지막까지 데이터 중에서 가장 작은것을 찾아 교환
+- 반복
+
+```java
+import java.util.Arrays;
+
+/**
+ * 선택 정렬 알고리즘
+ */
+public class SelectionSort {
+    public static void main(String[] args){
+        int[] array = {12,326,127,467,110,58};
+        int size = 6;
+        array = SelectionSort(array, size);
+        System.out.println(Arrays.toString(array));
+    }
+    public static int[] SelectionSort(int[] arr, int MAX){
+        int i,j;
+        int min, temp;
+        System.out.println(Arrays.toString(arr));
+        for(i=0; i< MAX;i++){
+            min = i;
+            for(j=i+1;j<MAX;j++){
+                if(arr[j] < arr[min]) min = j;
+            }
+            temp = arr[i];
+            arr[i] = arr[min];
+            arr[min] = temp;
+            System.out.println(Arrays.toString(arr));
+        }
+        return arr;
+    }
+}
+```
+
+### 교환 정렬 알고리즘(Exchange Sort)
+작은 것부터 큰 순서로 정렬할 경우, 작은 키를 갖는 데이터를 찾아 앞 데이터와 교환하는 알고리즘  
+- 대상 데이터의 앞에서부터 인접한 두 개의 크기를 비교하여 작은 것이 앞으로 가도록 교환
+- 나머지 데이터도 계속 비교하면서 작은 것이 앞으로 가도록 교환 
+- 큰 수에서 작은 수로 정렬하고자 하는 경우 반대로 적용 
+
+```java
+import java.util.Arrays;
+
+/**
+ * 교환 정렬 알고리즘
+ */
+public class ExchangeSort {
+    public static void main(String[] args){
+        int[] array = {12,326,127,467,110,58};
+        array = ExchangeSort(array);
+        System.out.println(Arrays.toString(array));
+    }
+    public static int[] ExchangeSort(int[] arr){
+        int i,j;
+        int temp;
+        int numLength = 6;
+        for(i=0; i < numLength;i++){
+            for(j=i+1; j < numLength;j++){
+                if(arr[i] > arr[j]){
+                    if(arr[i] > arr[j]){
+                        temp = arr[i];
+                        arr[i] = arr[j];
+                        arr[j] = temp;
+                    }
+                }
+            }
+        }
+        return arr;
+    }
+}
+```
+
+### 삽입 정렬 알고리즘(Insert Sort)
+교환 정렬 알고리즘과 비슷하지만, 다른 점은 위치 교환이 발생한 것을 대상으로 주변의 것과 비교하여 위치를 교환하는 알고리즘
+
+```java
+import java.util.Arrays;
+
+/**
+ * 삽입 정렬 알고리즘
+ */
+public class InsertSort {
+    public static void main(String[] args){
+        int[] a = {12,326,127,467,110,58};
+        for(int j=1; j < a.length;j++){
+            int key = a[j];
+            int i = j-1;
+            while(i >= 0 && a[i] > key){
+                a[i+1] = a[i];
+                i = i-1;
+            }
+            a[i+1] = key;
+        }
+
+        System.out.println(Arrays.toString(a));
+    }
+```
+
+### 쉘 정렬 알고리즘(Shell Sort)
+삽입 정렬 알고리즘의 느린 속도를 보와하기 위해 만들어진 알고리즘으로, 데이터의 그룹을 나우어 그룹 안에서 쉘 정렬을 수행하고 마지막에 삽입 정렬을 수행하는 알고리즘 
+- 작은 수에서 큰수로 정렬한다고 가정
+- 정렬 데이터를 2개의 무리로 분할하고 각 무리의 처음 값을 비교하여 작은 것이 앞으로 가도록 합니다. 
+- 반복
+- 한 무리가 1개의 데이터로 구성될때 까지 진행합니다. 
+
+```java
+// need to update
+// 책의 코드 결과 잘못도어 수정 후 업로드 예정
+```
+
+### 병렬 정렬 알고리즘(Merge Sort) 
+데이터를 분할한 다음 각자 계산하고 나중에 합쳐서 정렬하는 알고리즘
+- 작은 수에서 큰수로 정렬한다고 가정
+- 정렬할 데이터를 최소단위가 될때까지 분할 작업을 반복
+- 분할된 데이터를 대상으로 2개, 4개, 8개 병합하면서 정렬을 수행
+- 최종적으로 2개의 무리가 만들어진 후, 2차 병합 정렬 알고리즘 적용
+
+```java
+import java.util.Arrays;
+
+public class MergeSort {
+    public static void main(String[] args){
+        int[] src = new int[]{1,9,8,5,4,2,3,7,6};
+        int[] tmp = new int[src.length];
+        System.out.println(Arrays.toString(src));
+        mergeSort(0, src.length -1, src, tmp);
+        System.out.println(Arrays.toString(src));
+    }
+    public static void mergeSort(int start, int end, int[] src, int[] tmp){
+        if(start < end){
+            int mid = (start + end) / 2;
+            // 반반씩 나누어서 다시 시작
+            mergeSort(start, mid, src, tmp);
+            mergeSort(mid + 1, end, src, tmp);
+
+            int p = start;
+            int q = mid + 1;
+            int idx = p;
+
+            while(p<= mid || q <= end){
+                if(q > end || (p <= mid && src[p] < src[q])){
+                    tmp[idx++] = src[p++];
+                }else{
+                    tmp[idx++] = src[q++];
+                }
+            }
+            for(int i=start; i <= end ; i++){
+                src[i] = tmp[i];
+            }
+            System.out.printf("start : %d, mid : %d, end : %d \n", start, mid, end);
+            System.out.println(Arrays.toString(src));
+        }
+    }
+}
+
+```
+
+
+### 퀵 정렬 알고리즘(Quick Sort)
+중앙 값 정렬 방식을 확장해서 개발한 방식의 알고리즘
+- 임의로 선정된 데이터를 중심으로 데이터를 2등분
+- 각 분리된 부분의 첫번째 원소를 기준으로 데이터를 분리 
+- 반복 
+
+
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class QuickSort {
+    public static void main(String[] args){
+        Integer[] array = {30,50,7,40,88,15,44,55,22,33,77,99,11,66,1,85};
+        System.out.println(Arrays.toString(array));
+        List<Integer> aList = new ArrayList<>();
+        aList.addAll(Arrays.asList(array));
+
+        aList = (ArrayList<Integer>) quicksort(aList);
+        System.out.println(aList.toString());
+    }
+
+    private static <T extends Comparable<? super T>> List<T> quicksort(List<T> list) {
+        if(list.size() <= 1) return list;
+        int pivot = list.size() /2 ;
+        List<T> a = new ArrayList<T>();
+        List<T> b = new ArrayList<T>();
+        int c = 0;
+        for(T number : list){
+            if(list.get(pivot).compareTo(number) < 0) b.add(number);
+            else if(list.get(pivot).compareTo(number) > 0) a.add(number);
+            else c++;
+        }
+        a = quicksort(a);
+        for(int i=0; i < c; i++)
+            a.add(list.get(pivot));
+        b = quicksort(b);
+        List<T> sorted = new ArrayList<>();
+        sorted.addAll(a);
+        sorted.addAll(b);
+        return sorted;
+    }
+}
+
+```
+
+### 힙 정렬 알고리즘(Heap Sort)
+- 큰 수에서 작은 수로 정렬하고자하면, 힙을 구성할때 최상위 데이터를 가장 큰 수로 설정하도록 한다. 
+- 최상위 데이터를 빼고 나면, 나머지 데이터로 다시 힙을 구성.
+- 반복 
+
+
+### 정렬 알고리즘 선택 기준
+|상황|정렬 알고리즘|
+|--|--|
+|항목이 몇개 되지 않는다. | 삽입정렬 |
+|항목이 대부분 정렬되어 있다. | 삽입정렬 | 
+|최저 상황을 고려해야 한다. | 힙 정렬 |
+|평균 정렬 결과가 필요하다. | 쿽(빠른) 정렬 |
+|항목을 조밀한 모집단에서 가져왔다. | 버킷정렬 |
+|가능한 짧은 코드를 선호한다. | 삽입정렬  |
