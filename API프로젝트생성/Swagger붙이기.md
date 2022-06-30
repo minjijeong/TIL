@@ -69,3 +69,11 @@ public class SwaggerConfig {
 **http://localhost:8080/swagger-ui/index.html**
 
 ![Swagger Ui Index view](/스프링부트%20개발관련/pictures/swagger-ui-index.png)
+
+
+
+
+### 5. 스웨거 예제 
+https://victorydntmd.tistory.com/341
+https://wildeveloperetrain.tistory.com/3
+https://daddyprogrammer.org/post/313/swagger-api-doc/
